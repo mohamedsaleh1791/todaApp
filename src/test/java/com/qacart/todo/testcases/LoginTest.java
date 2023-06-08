@@ -1,30 +1,23 @@
 package com.qacart.todo.testcases;
 
 import com.qacart.todo.base.BaseTest;
-import com.qacart.todo.factory.DriverFactory;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import com.qacart.todo.pages.LoginPage;
+import com.qacart.todo.pages.TodoPage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
 
 public class LoginTest extends BaseTest {
 
     @Test
     public void shouldBeِAbleToLoginWithEmailAndPassword(){
 
+        LoginPage loginPage=new LoginPage(driver);
+        TodoPage todoPage=new TodoPage(driver);
 
-        driver.findElement(By.cssSelector("[data-testid=\"email\"]")).sendKeys("hatem@example.com");
-        driver.findElement(By.cssSelector("[data-testid=\"password\"]")).sendKeys("Test1234");
-        driver.findElement(By.cssSelector("[data-testid=\"submit\"]")).click();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
-        boolean isWelcomeDisplayed=driver.findElement(By.cssSelector("[data-testid=\"welcome\"]")).isDisplayed();
+        loginPage.login("hatem@example.com","Test1234");
+        boolean isWelcomeDisplayed=todoPage.isWelcomeMessageDisplayed();
         Assert.assertTrue(isWelcomeDisplayed);
-        driver.quit();
+
 
     }
 }

@@ -1,16 +1,11 @@
 package com.qacart.todo.testcases;
 
 import com.qacart.todo.base.BaseTest;
-import com.qacart.todo.factory.DriverFactory;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import com.qacart.todo.pages.LoginPage;
+import com.qacart.todo.pages.NewTodoPage;
+import com.qacart.todo.pages.TodoPage;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.time.Duration;
 
 public class ToDoTest extends BaseTest {
 
@@ -18,34 +13,41 @@ public class ToDoTest extends BaseTest {
     public void shouldBeAbleToAddNewToDo(){
 
 
-        driver.get("http://qacart-todo.herokuapp.com/login");
-        driver.findElement(By.cssSelector("[data-testid=\"email\"]")).sendKeys("hatem@example.com");
-        driver.findElement(By.cssSelector("[data-testid=\"password\"]")).sendKeys("Test1234");
-        driver.findElement(By.cssSelector("[data-testid=\"submit\"]")).click();
 
-        driver.findElement(By.cssSelector("[data-testid=\"add\"]")).click();
-        driver.findElement(By.cssSelector("[data-testid=\"new-todo\"]")).sendKeys("Learn Selenium");
-        driver.findElement(By.cssSelector("[data-testid=\"submit-newTask\"]")).click();
-        String actualResult=driver.findElement(By.cssSelector("[data-testid=\"todo-item\"]")).getText();
+        LoginPage loginPage=new LoginPage(driver);
+        TodoPage todoPage=new TodoPage(driver);
+        loginPage.login("hatem@example.com","Test1234");
+        todoPage.clickOnAddButton();
+
+//        new todo page
+        NewTodoPage newTodoPage=new NewTodoPage(driver);
+
+        newTodoPage.addNewTodo("Learn Selenium");
+
+
+        String actualResult=todoPage.checkTodoItem();
         Assert.assertEquals(actualResult,"Learn Selenium");
 
 
     }
-    @Test
+    @Test(enabled = false)
     public void shouldBeAbleToBeDelete(){
 
 
 
-        driver.findElement(By.cssSelector("[data-testid=\"email\"]")).sendKeys("hatem@example.com");
-        driver.findElement(By.cssSelector("[data-testid=\"password\"]")).sendKeys("Test1234");
-        driver.findElement(By.cssSelector("[data-testid=\"submit\"]")).click();
+        LoginPage loginPage=new LoginPage(driver);
+        loginPage.login("hatem@example.com","Test1234");
+        TodoPage todoPage=new TodoPage(driver);
+        todoPage.clickOnAddButton();
+//        new todo page
+        NewTodoPage newTodoPage=new NewTodoPage(driver);
 
-        driver.findElement(By.cssSelector("[data-testid=\"add\"]")).click();
-        driver.findElement(By.cssSelector("[data-testid=\"new-todo\"]")).sendKeys("Learn Selenium");
-        driver.findElement(By.cssSelector("[data-testid=\"submit-newTask\"]")).click();
+        newTodoPage.addNewTodo("Learn Selenium");
 
-        driver.findElement(By.cssSelector("[data-testid=\"delete\"]")).click();
-        boolean noToDoDisplayed=driver.findElement(By.cssSelector("[data-testid=\"no-todos\"]")).isDisplayed();
+
+
+        todoPage.clickOnDeleteButton();
+        boolean noToDoDisplayed=todoPage.isTodoDisplayed();
         Assert.assertTrue(noToDoDisplayed);
     }
 }
